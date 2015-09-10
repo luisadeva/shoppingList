@@ -9,18 +9,25 @@ and open the template in the editor.
         <title>Shopping List</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
         <script src="bower_components/angular/angular.js"></script>
         <script src="bower_components/angular-route/angular-route.js"></script>
         <script src="bower_components/angular-aria/angular-aria.js"></script>
         <script src="bower_components/angular-animate/angular-animate.js"></script>
         <script src="bower_components/angular-material/angular-material.js"></script>
         <script src="bower_components/angular-material-icons/angular-material-icons.js"></script>
+        <script src="bower_components/idbwrapper/idbstore.js"></script>
+        <script src="bower_components/angular-input-masks/angular-input-masks-standalone.min.js"></script>
         
+        <script src="js/app/model.js"></script>
         <script src="js/app/app.js"></script>
         <script src="js/app/controllers.js"></script>
+        <script src="js/app/services.js"></script>
         
             
-        
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="bower_components/angular-material/angular-material.css"/>
         <link rel="stylesheet" href="bower_components/angular-material-icons/angular-material-icons.css"/>
         
@@ -37,87 +44,104 @@ and open the template in the editor.
                 <md-toolbar layout-align="center center" layout-padding >
                     Listas de la compra
                 </md-toolbar>
-                <md-list role="list" flex>
-                    <md-list-item layout-align="center center" role="listitem">
-                         <md-button flex="100" class="md-raised">Lista 1</md-button>
+                <md-list role="list" flex >
+                    <md-list-item flex layout-align="center center" role="listitem">
+                        <form layout="row">
+                            <md-input-container>
+                                <label for="label">Nueva Lista</label>
+                                <input type="text" id="nuevaLista" ng-model="nuevaLista">
+                            </md-input-container>
+                            <md-button ng-disabled="!nuevaLista" ng-click="anadirLista()" class="md-fab md-mini" aria-label="Añadir lista">
+                                <md-icon md-font-library="material-icons">note_add</md-icon>
+                              </md-button>
+                        </form>
+                        
                     </md-list-item>
-                    <md-list-item layout-align="center center" role="listitem">
-                         <md-button flex="100" class="md-raised">Lista 2</md-button>
-                    </md-list-item>
-                    <md-list-item layout-align="center center" role="listitem">
-                         <md-button flex="100" class="md-raised">Lista 3</md-button>
-                    </md-list-item>
-                    <md-list-item layout-align="center center" role="listitem">
-                         <md-button flex="100" class="md-raised">Lista 4</md-button>
+                    <md-list-item flex layout-align="center center" role="listitem" ng-repeat="lista in listas track by $index">
+                        <md-button flex class="md-raised" ng-click="refreshList($index)">{{lista.nombre}}</md-button>
+                        <md-button ng-click="removeList($index)" class="md-fab md-mini" aria-label="Borrar lista">
+                            <md-icon md-font-library="material-icons">delete</md-icon>
+                          </md-button>
                     </md-list-item>
                 </md-list>
             </div>
             
             <!-- Panel derecho -->
             <div layout="column" flex>
-                <md-content class="md-padding">
-                    <md-tabs>
-                    <md-tab id="tab1">
-                        <md-tab-label>Etiqueta Sup1</md-tab-label>
-                        <md-tab-body>
-                            <md-content class="md-padding">
-                                <md-card>
-                                    <md-card-content>
-                                        <h2 class="md-title">Artículos</h2>
-                                        <md-list>
-                                            <md-subheader class="md-no-sticky">Lista Articulos</md-subheader>
-                                            <md-list-item>
-                                                <div layout="row" flex >
-                                                    <div flex="70">Lechuga</div>
-                                                    <div flex="10">52.77</div>
-                                                    <md-checkbox class="md-secondary" ></md-checkbox>
-                                                </div>
-                                            </md-list-item>
-                                            <md-list-item>
-                                                <div layout="row" flex>
-                                                    <div flex="70">Tomates</div>
-                                                    <div flex="10">22.36</div>
-                                                    <md-checkbox class="md-secondary" ></md-checkbox>
-                                                </div>
-                                            </md-list-item>
-                                            <md-list-item>
-                                                <div layout="row" flex>
-                                                    <div  flex="70">Cebolla</div>
-                                                    <div flex="10">2.55</div>
-                                                    <md-checkbox class="md-secondary" ></md-checkbox>
-                                                </div>
-                                            </md-list-item>
+                <md-content class="md-padding" flex>
+                    <form layout="column"  >
+                        <div layout="row" layout-sm="column" layout-align="start start" flex>
+                            
+                          <md-input-container>
+                            <label for="label">Nombre supermercado</label>
+                            <input type="text" id="label" ng-model="nombreSupermercado">
+                          </md-input-container>
+                          <md-button ng-disabled="!nombreSupermercado" ng-click="anadirSupermercado()" class="md-fab md-mini" aria-label="Añadir supermercado">
+                            <md-icon md-font-library="material-icons">note_add</md-icon>
+                          </md-button>
+                          
+                        </div>
+                        <div layout="row" layout-sm="column" layout-align="start start" flex>
+                                
+                                
+                                <md-input-container>
+                                  <label for="nombreArticulo">Nombre Artículo</label>
+                                  <input clean="true" type="text" id="nombreArticulo" ng-model="nombreArticulo">
+                                  
+                                </md-input-container>
+                                <md-input-container>
+                                  <label for="nombreArticulo">Precio Artículo</label>
+                                  <input ui-money-mask type="text" id="precioArticulo" ng-model="precioArticulo" >
+                                  
+                                </md-input-container>
+                                  <md-button ng-disabled="!(nombreArticulo && precioArticulo)" ng-click="anadirArticulo()" class="md-fab md-mini" aria-label="Añadir supermercado">
+                                    <md-icon md-font-library="material-icons">note_add</md-icon>
+                                  </md-button>
+
+                              </div>
+                            
+                      </form>
+                    <md-tabs md-selected="pestanaSuperSelected">
+                        <md-tab ng-repeat="super in listas[idListaActual].supermercados" id="tab-{{super.id}}" >
+                            <md-tab-label>{{super.nombre}}</md-tab-label>
+                            <md-tab-body>
+                                <md-content class="md-padding">
+                                    <md-card>
+                                        <md-card-content>
+                                            <h2 class="md-title">Número de artículos: ({{super.articulos.length}})</h2>
                                             
-                                            <md-list-item>
                                                 
-                                                <div layout="row" flex="100" >
-                                                    <div flex="70" layout-align="center center"><h1>Total</h1></div>
-                                                    <div flex="30" layout-align="end center"><h1>209.55</h1></div>
-                                                </div>
                                                 
-                                            </md-list-item>
-                                        </md-list>
-                                      </md-card-content>
-                                    <div class="md-actions" layout="row" layout-align="end center">
-                                    <md-button>Compartir Lista</md-button>
-                                  </div>
-                                </md-card>
-                            </md-content>
-                        </md-tab-body>
-                    </md-tab>
-                    <md-tab id="tab2">
-                        <md-tab-label>Etiqueta Sup2</md-tab-label>
-                        <md-tab-body>
-                            contenido2
-                        </md-tab-body>
-                    </md-tab>
-                    <md-tab id="tab3">
-                        <md-tab-label>Etiqueta Sup3</md-tab-label>
-                        <md-tab-body>
-                            contenido3
-                        </md-tab-body>
-                    </md-tab>
-                </md-tabs>
+                                                <md-list-item ng-repeat="articulo in super.articulos" ng-click="cambiarCheck(articulo)">
+                                                    
+                                                    
+                                                    <div layout="row" flex >
+                                                        <div flex="70">{{articulo.nombre}}</div>
+                                                        <div flex="10">{{articulo.precio}}</div>
+                                                        <md-checkbox class="md-secondary" ng-checked="articulo.check"></md-checkbox>
+                                                    </div>
+                                                </md-list-item>
+                                                
+
+                                                <md-list-item>
+
+                                                    <div layout="row" flex="100" >
+                                                        <div flex="70" layout-align="center center"><h1>Total</h1></div>
+                                                        <div flex="30" layout-align="end center"><h1>122.33</h1></div>
+                                                    </div>
+
+                                                </md-list-item>
+                                            </md-list>
+                                          </md-card-content>
+                                        <div class="md-actions" layout="row" layout-align="end center">
+                                        <md-button>Compartir Lista</md-button>
+                                      </div>
+                                    </md-card>
+                                </md-content>
+                            </md-tab-body>
+                        </md-tab>
+                        
+                    </md-tabs>
                 </md-content>
                 
             </div>
