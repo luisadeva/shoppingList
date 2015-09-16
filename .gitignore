@@ -1,6 +1,7 @@
 public_html/bower_components
 nbproject
 
+.env
 
 # Logs
 logs

@@ -9,8 +9,17 @@
     "browser"
   ],
   "author": "operador",
+  "scripts": {
+    "start": "node app.js",
+	"postinstall": "bower install --force-latest"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "2.10.x"
+  },
   "contributors": [],
   "dependencies": {
+    "bower": "^1.5.2",
     "express": "^4.13.3"
   }
 }
