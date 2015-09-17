@@ -36,7 +36,7 @@ shoppingListServices.factory('shoppingListServicesBD', [
                             //myStore.put(listasPrueba, callback, function (error) {console.log(error)});
                             
                             
-                            
+                            callback();
 
                         },
                         onError: function(error){ console.log("Error when init DB: " + error); throw error;}
@@ -63,7 +63,13 @@ shoppingListServices.factory('shoppingListServicesBD', [
                        callback();
                 } , 
                 function (error) {console.log(error); throw error;});
+        },
+        
+        removeAll: function (callback) {
+            myStore.clear();
+            callback();
         }
+        
         
     };
     

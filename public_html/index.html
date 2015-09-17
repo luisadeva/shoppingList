@@ -35,7 +35,11 @@ and open the template in the editor.
     </head>
     <body ng-controller="ShoppingListCtrl" layout="column" >
         
-        <md-toolbar layout-align="center center">Shopping List</md-toolbar>
+        <md-toolbar layout="row" layout-align="center center">Shopping List
+            <md-button ng-click="removeAll()" class="md-fab md-mini" aria-label="Delete ALL">
+                <md-icon md-font-library="material-icons">delete</md-icon>
+              </md-button>
+        </md-toolbar>
     
         
         <div layout-gt-sm="row" layout-align="start start" flex>

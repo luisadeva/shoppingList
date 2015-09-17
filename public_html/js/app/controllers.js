@@ -192,4 +192,15 @@ phonecatApp.controller('ShoppingListCtrl', ["$scope", "$route", "$mdDialog", "sh
   };
   
   
+  
+  
+  $scope.removeAll = function () {
+      
+      shoppingListServicesBD.removeAll(function () {
+          $scope.listas = [];
+          $route.reload();
+      });
+      
+  };
+  
 }]);
