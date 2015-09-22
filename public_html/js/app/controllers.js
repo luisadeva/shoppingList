@@ -5,26 +5,33 @@ var phonecatApp = angular.module('ShoppingListApp',
              $mdThemingProvider.theme('default')
     .primaryPalette('blue-grey')
     .accentPalette('orange');
-});
+}
+    );
 
 
 
-phonecatApp.controller('ShoppingListCtrl', ["$scope", "$route", "$mdDialog", "shoppingListServicesBD", function ($scope, $route, $mdDialog, shoppingListServicesBD) {
+phonecatApp.controller('ShoppingListCtrl', ["$scope", "$route", "shoppingListServicesBD", "$mdSidenav", "$mdBottomSheet", function ($scope, $route, shoppingListServicesBD, $mdSidenav, $mdBottomSheet) {
     
+   
     /**
     * Identificador de la lista que se esta viendo
     * @type type
     */
   $scope.idListaActual=0;
+  
+  
   $scope.pestanaSuperSelected=0;
+  
+  
+  
   $scope.nombreSupermercado = "";
   
   $scope.$watch('pestanaSuperSelected', function(current, old){
       console.log("Actual " + current);
       console.log("Antiguo " + old);
       
-      $scope.pestanaSuperSelected = current;
-      console.log("pestanaSuperSelected " + $scope.pestanaSuperSelected);
+        $scope.pestanaSuperSelected = current;
+        console.log("pestanaSuperSelected " + $scope.pestanaSuperSelected);
       
     });
   
@@ -39,12 +46,19 @@ phonecatApp.controller('ShoppingListCtrl', ["$scope", "$route", "$mdDialog", "sh
   });
   
   
-  
+  $scope.toggleList = function () {
+      var pending = $mdBottomSheet.hide() || $q.when(true);
+
+      pending.then(function(){
+        $mdSidenav('left').toggle();
+      });
+    };
   
   
  $scope.refreshList = function (idLista) {
       $scope.idListaActual = idLista;
       console.log("Elegida:" + $scope.idListaActual);
+      
       
       $route.reload();
       
@@ -93,34 +107,34 @@ phonecatApp.controller('ShoppingListCtrl', ["$scope", "$route", "$mdDialog", "sh
     
     $scope.nombreSupermercado = "";
     
-    $scope.pestanaSuperSelected=$scope.listas.length;
+    $scope.pestanaSuperSelected=supermercados.length;
 
     console.log(JSON.stringify($scope.listas));
   };
   
   
-  $scope.anadirArticulo = function () {
+  $scope.anadirArticulo = function (nombreArticulo, precioArticulo) {
       
       
-      var listaArticulos = $scope.listas[$scope.idListaActual].supermercados[$scope.pestanaSuperSelected].articulos;
+      var listaArticulos = $scope.listas[$scope.idListaActual].supermercados[$scope.pestanaSuperSelected-1].articulos;
       
       
       //inicializamos la lista articulos
       if (!listaArticulos) {
           listaArticulos = [];
-          $scope.listas[$scope.idListaActual].supermercados[$scope.pestanaSuperSelected].articulos = listaArticulos;
+          $scope.listas[$scope.idListaActual].supermercados[$scope.pestanaSuperSelected-1].articulos = listaArticulos;
       }
       console.log("Añadimos articulo " + listaArticulos.length);
-      console.log("Añadimos articulo " + $scope.nombreArticulo);
+      console.log("Añadimos articulo " + nombreArticulo);
       
-      var productoNuevo = {nombre: $scope.nombreArticulo, precio: $scope.precioArticulo, check: true};
+      var productoNuevo = {nombre: nombreArticulo, precio: precioArticulo, check: true};
       
       listaArticulos.push(productoNuevo);
       
       shoppingListServicesBD.saveLists($scope.listas, function (){});
       
-      $scope.nombreArticulo = "";
-      $scope.precioArticulo = "";
+      nombreArticulo = "";
+      precioArticulo = "";
       
       console.log(JSON.stringify($scope.listas));
   };
