@@ -10,9 +10,17 @@ var phonecatApp = angular.module('ShoppingListApp',
 
 
 
-phonecatApp.controller('ShoppingListCtrl', ["$scope", "$route", "shoppingListServicesBD", "$mdSidenav", "$mdBottomSheet", function ($scope, $route, shoppingListServicesBD, $mdSidenav, $mdBottomSheet) {
+phonecatApp.controller('ShoppingListCtrl', 
+    ["$scope", "$route", "shoppingListServicesBD", "shoppingListServicesWebRtc","$mdSidenav", "$mdBottomSheet", 
+     function ($scope, $route, shoppingListServicesBD, shoppingListServicesWebRtc, $mdSidenav, $mdBottomSheet) {
     
-   
+     
+    
+    
+    
+    
+    
+    
     /**
     * Identificador de la lista que se esta viendo
     * @type type
@@ -216,5 +224,33 @@ phonecatApp.controller('ShoppingListCtrl', ["$scope", "$route", "shoppingListSer
       });
       
   };
+  
+  
+  $scope.shareList = function (idUserPeer) {
+      
+      console.log ("Compartir lista: " + idUserPeer);
+      
+      
+      var listaToShare = "HOLA LISTA";
+      
+      
+      shoppingListServicesWebRtc.shareList(listaToShare, function () {
+          console.log("Enviada lista");
+      });
+      
+      
+  };
+  
+  $scope.receiveList = function () {
+      
+      console.log("valor switchReceiveList: "+ $scope.switchReceiveList);
+      
+      shoppingListServicesWebRtc.receiveList(function () {
+          console.log("Enviada lista");
+      });
+      
+      
+  };
+  
   
 }]);

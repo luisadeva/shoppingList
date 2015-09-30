@@ -1,5 +1,6 @@
 var shoppingListServices = angular.module('shoppingListServices', []);
 
+
 shoppingListServices.factory('shoppingListServicesBD', [
   function(){
         
@@ -72,6 +73,52 @@ shoppingListServices.factory('shoppingListServicesBD', [
         
         
     };
+    
+      
+    
+  }]);
+  
+  
+  
+  shoppingListServices.factory('shoppingListServicesWebRtc', [
+    function(){
+
+      var peer;
+      var conn;
+
+      return {
+      
+            init: function  (callback) {
+                
+                peer = new Peer('', {host: 'server-rtc.herokuapp.com', port:'80', debug:'3'});
+                
+                peer.on('open', function(id) {
+                    console.log('My peer ID is: ' + id);
+                    callback(id);
+                });
+                
+            },
+            
+            connect: function (idPeer) {
+                
+              conn = peer.connect(idPeer);
+              
+              // Receive messages
+                conn.on('data', function(data) {
+                  console.log('Received', data);
+                });
+
+                // Send messages
+                conn.send('Hello!');
+              
+              
+            },
+            
+            on: function(nameEvent, callback){
+                peer.on(nameEvent, callback);
+            }
+        
+      };
     
       
     

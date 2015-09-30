@@ -20,6 +20,7 @@ and open the template in the editor.
         <script src="bower_components/angular-material-icons/angular-material-icons.js"></script>
         <script src="bower_components/idbwrapper/idbstore.js"></script>
         <script src="bower_components/angular-input-masks/angular-input-masks-standalone.min.js"></script>
+        <script src="bower_components/peerjs/peer.js"></script>
         
         <script src="js/app/model.js"></script>
         <script src="js/app/app.js"></script>
@@ -77,6 +78,9 @@ and open the template in the editor.
             <md-button ng-click="removeAll()" class="md-fab md-mini" aria-label="Delete ALL">
                 <md-icon md-font-library="material-icons">delete</md-icon>
               </md-button>
+            <md-switch aria-label="Recibir lista" ng-model="switchReceiveList" ng-change="receiveList()">
+                Recibir lista {{switchReceiveList}}
+            </md-switch>
         </md-toolbar>
         
         
@@ -152,7 +156,16 @@ and open the template in the editor.
                                         </md-list>
                                       </md-card-content>
                                     <div class="md-actions" layout="row" layout-align="end center">
-                                    <md-button>Compartir Lista</md-button>
+                                        <form id="compartirLista" layout="row" ng-submit="shareList(idUserPeer)">
+                                            <md-input-container>
+                                                <label for="label">Compartir lista</label>
+                                                <input type="text" id="label" ng-model="idUserPeer">
+                                              </md-input-container>
+                                              <md-button ng-disabled="!idUserPeer" type="submit" class="md-fab md-mini" aria-label="Compartir lista">
+                                                <md-icon md-font-library="material-icons">send</md-icon>
+                                              </md-button>
+                                        </form>
+                                    
                                   </div>
                                 </md-card>
                             </md-content>
